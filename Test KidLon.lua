@@ -1,3 +1,10 @@
+local ex = string.lower(identifyexecutor())
+local pl = game:GetService("Players").LocalPlayer
+
+if string.find(ex, "solara") or string.find(ex, "xeno") then
+    pl:Kick("XENO AND SOLARA IS UNSUPPORTED BROTHER!!!") --do not remove this cuz xeno and solara can get possible ban
+  return
+end
 
 -- This file was protected using Luraph Obfuscator v14.7 [https://lura.ph/]
 
