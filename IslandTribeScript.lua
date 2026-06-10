@@ -455,7 +455,7 @@ local Button = Tab2:CreateButton({
 
 
 local Button = Tab2:CreateButton({
-    Name = "Snow Pack 500x",
+    Name = "PutOut Snow Pack 500x",
     Callback = function()
         local chest = GetClosestChest()
         if not chest then
@@ -468,6 +468,52 @@ local Button = Tab2:CreateButton({
         
         for i = 1, 499 do
             table.insert(itemIDs, 346)
+        end
+        local Event = ReplicatedStorage.References.Comm.Events.UpdateStorageChest
+
+        for _, itemID in ipairs(itemIDs) do
+            Event:FireServer(chest, putOut, itemID)
+        end
+    end,
+})
+
+local Button = Tab2:CreateButton({
+    Name = "Candy Poion 500x",
+    Callback = function()
+        local chest = GetClosestChest()
+        if not chest then
+            warn("No nearby chest found.")
+            return
+        end
+            
+        local putIn = true
+        local itemIDs = {372}
+        
+        for i = 1, 499 do
+            table.insert(itemIDs, 372)
+        end
+        local Event = ReplicatedStorage.References.Comm.Events.UpdateStorageChest
+
+        for _, itemID in ipairs(itemIDs) do
+            Event:FireServer(chest, putIn, itemID)
+        end
+    end,
+})
+
+local Button = Tab2:CreateButton({
+    Name = "PutOut Candy Poion 500x",
+    Callback = function()
+        local chest = GetClosestChest()
+        if not chest then
+            warn("No nearby chest found.")
+            return
+        end
+            
+        local putIn = true
+        local itemIDs = {372}
+        
+        for i = 1, 499 do
+            table.insert(itemIDs, 372)
         end
         local Event = ReplicatedStorage.References.Comm.Events.UpdateStorageChest
 
