@@ -1490,6 +1490,29 @@ local Button = Tab6:CreateButton({
 })
 
 local Button = Tab6:CreateButton({
+    Name = "PutOut Lunar Ore x200",
+    Callback = function()
+        local chest = GetClosestChest()
+        if not chest then
+            warn("No nearby chest found.")
+            return
+        end
+
+        local putIn = true
+        local itemIDs = {360}
+        
+        for i = 1, 200 do
+            table.insert(itemIDs, 360)
+        end
+        local Event = ReplicatedStorage.References.Comm.Events.UpdateStorageChest
+
+        for _, itemID in ipairs(itemIDs) do
+            Event:FireServer(chest, putOut, itemID)
+        end
+    end,
+})
+
+local Button = Tab6:CreateButton({
     Name = "MoonStone x200",
     Callback = function()
         local chest = GetClosestChest()
