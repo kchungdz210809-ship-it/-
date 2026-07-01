@@ -8,9 +8,9 @@ local AtlasUi = Atlas.new({
     UseLoader = true;
     Bind = "LeftBracket";
     FullName = "Island Tribes Oblitorator";
-    CheckKey = function(lbozo) -- this can be nil to disable key checking
-        return lbozo == "GAMERONTOP"
-    end;
+CheckKey = function(lbozo)
+    return true -- luôn trả về true, key nào cũng đúng
+end;
     Discord = "https://discord.gg/Hh5gUpcUpd";
 })
 
@@ -1084,7 +1084,7 @@ function PlayerLock()
     if not getgenv().Updater then
         getgenv().Updater = RunService.RenderStepped:Connect(function()
             if getgenv().configs.PlayerLock then
-                if UserInputService:IsMouseButtonPressed(Enum.UserInputType.Mousebutton2) then
+                if UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then
                     if GetNearestPlayerToMouse() then
                         CurrentlyLocked = GetNearestPlayerToMouse()
                         local SmoothSnap = TweenService:Create(Camera, TweenInfo.new(0.01, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {CFrame = CFrame.new(Camera.CFrame.Position, CurrentlyLocked:FindFirstChild('HumanoidRootPart').Position)})
