@@ -709,41 +709,49 @@ local Button = Tab2:CreateButton({
 })
 
 local Button = Tab2:CreateButton({
-   Name = "Zen Pack 500x",
-   Callback = function()
-     local localChest = game:GetService("Workspace").Replicators.NonPassive["Obsidian Storage Chest"]
-     local putIn = true
-     local itemIDs = {327}
-      
-      for i = 1, 500 do
-          table.insert(itemIDs, 327)
-      end
-      
-      local Event = game:GetService("ReplicatedStorage").References.Comm.Events.UpdateStorageChest
-      
-      for _, itemID in ipairs(itemIDs) do
-          Event:FireServer(localChest, putIn, itemID)
-      end
- end,
+    Name = "🤺Warr. pack 25x",
+    Callback = function()
+        local chest = GetClosestChest()
+        if not chest then
+            warn("No nearby chest found.")
+            return
+        end
+
+        local putIn = true
+        local itemIDs = {327}
+        
+        for i = 1, 24 do
+            table.insert(itemIDs, 327)
+        end
+        local Event = ReplicatedStorage.References.Comm.Events.UpdateStorageChest
+
+        for _, itemID in ipairs(itemIDs) do
+            Event:FireServer(chest, putIn, itemID)
+        end
+    end,
 })
 
 local Button = Tab2:CreateButton({
-   Name = "Diamond Pack 500x",
-   Callback = function()
-     local localChest = game:GetService("Workspace").Replicators.NonPassive["Obsidian Storage Chest"]
-     local putIn = true
-     local itemIDs = {326}
-      
-      for i = 1, 500 do
-          table.insert(itemIDs, 326)
-      end
-      
-      local Event = game:GetService("ReplicatedStorage").References.Comm.Events.UpdateStorageChest
-      
-      for _, itemID in ipairs(itemIDs) do
-          Event:FireServer(localChest, putIn, itemID)
-      end
- end,
+    Name = "🤺Warr. pack 25x",
+    Callback = function()
+        local chest = GetClosestChest()
+        if not chest then
+            warn("No nearby chest found.")
+            return
+        end
+
+        local putIn = true
+        local itemIDs = {326}
+        
+        for i = 1, 24 do
+            table.insert(itemIDs, 326)
+        end
+        local Event = ReplicatedStorage.References.Comm.Events.UpdateStorageChest
+
+        for _, itemID in ipairs(itemIDs) do
+            Event:FireServer(chest, putIn, itemID)
+        end
+    end,
 })
 
 local Button = Tab2:CreateButton({
