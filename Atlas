@@ -1,5 +1,5 @@
 
-local Atlas = loadstring(game:HttpGet("https://raw.githubusercontent.com/TheRealGamer903/IslandTribesObliterator/refs/heads/main/Atlas"))()
+local Atlas = loadstring(game:HttpGet("https://raw.githubusercontent.com/kchungdz210809-ship-it/-/refs/heads/main/AtlasUI"))()
 local AtlasUi = Atlas.new({
     Name = "Island Tribes Oblitorator";
     ConfigFolder = "IslandTribes"; 
