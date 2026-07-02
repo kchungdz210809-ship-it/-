@@ -709,7 +709,7 @@ local Button = Tab2:CreateButton({
 })
 
 local Button = Tab2:CreateButton({
-    Name = "🤺Warr. pack 25x",
+    Name = "Zen Pack x25",
     Callback = function()
         local chest = GetClosestChest()
         if not chest then
@@ -732,7 +732,7 @@ local Button = Tab2:CreateButton({
 })
 
 local Button = Tab2:CreateButton({
-    Name = "🤺Warr. pack 25x",
+    Name = "Diamond pack 25x",
     Callback = function()
         local chest = GetClosestChest()
         if not chest then
