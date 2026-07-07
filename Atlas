@@ -1,5 +1,4 @@
-
-local Atlas = loadstring(game:HttpGet("https://raw.githubusercontent.com/kchungdz210809-ship-it/-/refs/heads/main/AtlasUI"))()
+local Atlas = loadstring(game:HttpGet("https://raw.githubusercontent.com/TheRealGamer903/IslandTribesObliterator/refs/heads/main/Atlas"))()
 local AtlasUi = Atlas.new({
     Name = "Island Tribes Oblitorator";
     ConfigFolder = "IslandTribes"; 
@@ -1199,17 +1198,17 @@ end
 function ConiferFarm()
     local function GetClosestTree()
         local range = math.huge
-        local closestree
+        local closesttree
         for _, tree in pairs(Workspace:WaitForChild('Replicators'):WaitForChild('Both'):GetChildren()) do
             if tree.Name == 'Conifer' then
                 local dist = (LocalPlayer.Character.HumanoidRootPart.Position - tree:GetPivot().Position).magnitude
                 if dist < range then
                     range = dist
-                    closestree = tree
+                    closesttree = tree
                 end
             end
         end
-        return closestree
+        return closesttree
     end
 
     local function TreeFarm()
@@ -1224,7 +1223,7 @@ function ConiferFarm()
                     end
                     return
                 end
-                if losestTree.Parent then
+                if ClosestTree.Parent then
                     if IsPlayerAlive(LocalPlayer) then
                         LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(ClosestTree:GetPivot().Position)
                         RemoteEvents['ToolAction']:FireServer(ClosestTree)
@@ -3911,7 +3910,5 @@ local BumpUpVisualsSection = Visuals:CreateSection('')
 
 local CreditSection = Credits:CreateSection('Credits')
 
-CreditSection:CreateParagraph("TheRealGamer903#7339(on discord)")
-CreditSection:CreateParagraph("Join the discord! [https://discord.gg/Hh5gUpcUpd]")
-
-
+CreditSection:CreateParagraph("KCHUNGDZ")
+CreditSection:CreateParagraph("Join the discord! [i dont have]")
