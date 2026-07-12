@@ -8,7 +8,7 @@ local AtlasUi = Atlas.new({
     Bind = "LeftBracket";
     FullName = "Island Tribes Oblitorator";
 CheckKey = function(lbozo)
-    return lbozo = "1" -- luôn trả về true, key nào cũng đúng
+    return lbozo == "1" -- luôn trả về true, key nào cũng đúng
 end;
     Discord = "https://discord.gg/Hh5gUpcUpd";
 })
