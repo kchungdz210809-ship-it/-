@@ -1,0 +1,29 @@
+PlayerModificationsSection:CreateToggle({
+    Name = 'Anti-Ragdoll',
+    Default = false,
+    Flag = 'AntiRagDoll',
+    Callback = function(Value)
+        getgenv().configs.AntiRagDoll = Value
+        if getgenv().configs.AntiRagDoll then
+            if not getgenv().RagDollBypass then
+                getgenv().RagDollBypass = LocalPlayer.Character:WaitForChild('Humanoid').StateChanged:Connect(function(state)
+                    if not getgenv().configs.AntiRagDoll then
+                        getgenv().RagDollBypass:Disconnect()
+                        getgenv().RagDollBypass = nil
+                        return
+                    end
+                    if IsPlayerAlive(LocalPlayer) then
+                        if LocalPlayer.Character:WaitForChild('Humanoid'):GetState() == Enum.HumanoidStateType.Physics then
+                            LocalPlayer.Character.Humanoid:ChangeState(2)
+                        end
+                    end
+                end)
+            end
+        else
+            if getgenv().RagDollBypass then
+                getgenv().RagDollBypass:Disconnect()
+                getgenv().RagDollBypass = nil
+            end
+        end
+	end
+})
