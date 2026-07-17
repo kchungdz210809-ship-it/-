@@ -1632,32 +1632,6 @@ Tabs.Duping:AddButton({
 createPackButton(Tabs.Duping, "Fresh pack 25x", 111, 25, false)
 createPackButton(Tabs.Duping, "Stone pack 25x", 112, 25, false)
 
-Tabs.Duping:AddButton({
-    Title = "Dupe All x500",
-    Description = "Multiple items",
-    Callback = function()
-        local chest = GetClosestChest()
-        if not chest then return end
-        local ids = {203,204,216,188,325,272,301,271}
-        for i = 1, 499 do
-            for _, id in ipairs(ids) do RemoteEvents['UpdateStorageChest']:FireServer(chest, true, id) end
-        end
-    end
-})
-
-Tabs.Duping:AddButton({
-    Title = "Dupe All2 x500",
-    Description = "Another set",
-    Callback = function()
-        local chest = GetClosestChest()
-        if not chest then return end
-        local ids = {112,382,378,225,226,227,228,201,202}
-        for i = 1, 499 do
-            for _, id in ipairs(ids) do RemoteEvents['UpdateStorageChest']:FireServer(chest, true, id) end
-        end
-    end
-})
-
 -- ===== TAB 3: Crazy Dupe =====
 Tabs.Crazy:AddSection("Gliders 🪁")
 Tabs.Crazy:AddButton({ Title = "Easter Glider", Description = "PutIn", Callback = function() local c = GetClosestChest() if c then RemoteEvents['UpdateStorageChest']:FireServer(c, true, 272) end end })
