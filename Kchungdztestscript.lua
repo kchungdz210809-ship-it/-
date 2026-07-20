@@ -1,3 +1,4 @@
+-- ===== TẢI FLUENT UI =====
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
@@ -64,7 +65,7 @@ local RemoteEvents = {
 -- ===== MYINVENTORY =====
 local MyInventory = LocalPlayer:WaitForChild('PlayerGui'):FindFirstChild('Menus'):FindFirstChild('Inventory'):FindFirstChild('Inventory'):FindFirstChild('List')
 
--- ===== ALLITEMS (RÚT GỌN) =====
+-- ===== ALLITEMS =====
 local ALLITEMS = {
     [1] = "Stick", [2] = "Small Raft", [3] = "Small Campfire", [4] = "Wood Boots",
     [5] = "Wooden Harvester", [6] = "Wood Helmet", [7] = "Wooden Club", [8] = "Leather Bag",
@@ -200,7 +201,15 @@ getgenv().QuickSpeedMultiplier = 1
 getgenv().AmountOfChestInserts = 1
 getgenv().PredictAmount = 3
 getgenv().QuickSpeedKey = Enum.KeyCode.B
+getgenv().QuickSpeedToggle = false
 getgenv().GliderModSpeed = 30
+getgenv().GliderModToggle = false
+
+-- ===== CẤU HÌNH AIMBOT =====
+getgenv().AimbotEnabled = true
+getgenv().AimbotPart = "Head"
+getgenv().AimbotRange = 75
+getgenv().AimbotFOV = 100
 
 -- ===== BIẾN TOÀN CỤC =====
 local Whitelist_table = {}
@@ -437,7 +446,8 @@ function MineAura()
                                 local mypos = LocalPlayer.Character.HumanoidRootPart.Position
                                 dist = (mypos - obj).magnitude
                                 if dist < range then
-                                    if ore.Name == 'Plantain' then                                        if ore:FindFirstChild('Tree') and ore:FindFirstChild('Tree'):FindFirstChild('Palm Tree_Trunk') then
+                                    if ore.Name == 'Plantain' then
+                                        if ore:FindFirstChild('Tree') and ore:FindFirstChild('Tree'):FindFirstChild('Palm Tree_Trunk') then
                                             obj = Vector3.new(3378, 15, -4475)
                                         end
                                     end
@@ -1265,18 +1275,6 @@ function JumpPower()
     end
 end
 
--- ===== EXTRA SPEED =====
-function ExtraSpeed()
-    while getgenv().configs.ExtraSpeed do
-        if getgenv().configs.ExtraSpeed then
-            task.wait()
-            if IsPlayerAlive(LocalPlayer) then
-                LocalPlayer.Character.Humanoid.WalkSpeed = 21
-            end
-        end
-    end
-end
-
 -- ===== PLAYER ESP =====
 function PlayerEsp()
     if getgenv().configs.PlayerEsp then
@@ -1368,6 +1366,128 @@ function PlayerEsp()
         end
     end
 end
+
+-- ===== AIMBOT =====
+local AimbotState = {
+    Enabled = true,
+    Connections = {},
+    LockedTarget = nil
+}
+
+local isAiming = false
+local targetLocked = false
+
+local function GetClosestInFOV()
+    local closest = nil
+    local minDist = math.huge
+    local mousePos = UserInputService:GetMouseLocation()
+    local char = LocalPlayer.Character
+    if not char then return nil end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    if not root then return nil end
+    
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            local part = player.Character:FindFirstChild(getgenv().AimbotPart)
+            if part then
+                local realDist = (part.Position - root.Position).Magnitude
+                if realDist > getgenv().AimbotRange then
+                    continue
+                end
+                
+                local screenPos, onScreen = workspace.CurrentCamera:WorldToScreenPoint(part.Position)
+                if onScreen then
+                    local dist = (Vector2.new(mousePos.X, mousePos.Y) - Vector2.new(screenPos.X, screenPos.Y)).Magnitude
+                    if dist <= getgenv().AimbotFOV and dist < minDist then
+                        closest = part
+                        minDist = dist
+                    end
+                end
+            end
+        end
+    end
+    return closest
+end
+
+local function IsTargetValid(target)
+    if not target then return false end
+    if not target.Parent then return false end
+    local player = Players:GetPlayerFromCharacter(target.Parent)
+    if not player then return false end
+    if player == LocalPlayer then return false end
+    if not player.Character then return false end
+    if not player.Character:FindFirstChild(getgenv().AimbotPart) then return false end
+    
+    local char = LocalPlayer.Character
+    if not char then return false end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    if not root then return false end
+    local dist = (target.Position - root.Position).Magnitude
+    if dist > getgenv().AimbotRange then return false end
+    
+    return true
+end
+
+local connections = {}
+
+table.insert(connections, UserInputService.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton2 then
+        isAiming = true
+        if getgenv().AimbotEnabled and AimbotState.Enabled then
+            local target = GetClosestInFOV()
+            if target then
+                AimbotState.LockedTarget = target
+                targetLocked = true
+            end
+        end
+    end
+end))
+
+table.insert(connections, UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton2 then
+        isAiming = false
+        targetLocked = false
+        AimbotState.LockedTarget = nil
+    end
+end))
+
+table.insert(connections, UserInputService.InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.F1 then
+        getgenv().AimbotEnabled = not getgenv().AimbotEnabled
+        if not getgenv().AimbotEnabled then
+            targetLocked = false
+            AimbotState.LockedTarget = nil
+        end
+    end
+end))
+
+table.insert(connections, RunService.RenderStepped:Connect(function()
+    if getgenv().AimbotEnabled and isAiming and AimbotState.Enabled then
+        local target = AimbotState.LockedTarget
+        
+        if targetLocked and target and IsTargetValid(target) then
+            local newPart = target.Parent:FindFirstChild(getgenv().AimbotPart)
+            if newPart then
+                workspace.CurrentCamera.CFrame = CFrame.new(
+                    workspace.CurrentCamera.CFrame.Position,
+                    newPart.Position
+                )
+            end
+        else
+            if targetLocked then
+                targetLocked = false
+                AimbotState.LockedTarget = nil
+                local newTarget = GetClosestInFOV()
+                if newTarget then
+                    AimbotState.LockedTarget = newTarget
+                    targetLocked = true
+                end
+            end
+        end
+    end
+end))
+
+AimbotState.Connections = connections
 
 -- ===== TẠO CÁC TAB =====
 local Tabs = {
@@ -1702,9 +1822,92 @@ KillAuraSection2:AddInput("RemoveWhitelist", { Title = "Remove Whitelisted Perso
 end })
 
 local CloseCombatSection2 = Tabs.Combat:AddSection("Close Combat")
-CloseCombatSection2:AddToggle("PlayerLock", { Title = "Player Lock (Aimbot)", Default = false, Callback = function(Value) getgenv().configs.PlayerLock = Value PlayerLock() end })
-CloseCombatSection2:AddToggle("AutoHeal", { Title = "Auto Heal (Pumpkins)", Default = false, Callback = function(Value) getgenv().configs.Pumpkins = Value Pumpkins() end })
-CloseCombatSection2:AddToggle("HitboxExtender", { Title = "Hitbox Extender", Default = false, Callback = function(Value) getgenv().configs.Hitbox = Value Hitbox() if not getgenv().configs.Hitbox then for _, plr in pairs(Players:GetPlayers()) do if plr ~= LocalPlayer and IsPlayerAlive(plr) and plr.Character:FindFirstChild('Hitbox') then plr.Character.Hitbox.Size = Vector3.new(4.9453125, 6.273651123046875, 2.0283203125) end end end end })
+CloseCombatSection2:AddToggle("PlayerLock", { 
+    Title = "Player Lock (Aimbot)", 
+    Default = false, 
+    Callback = function(Value) 
+        getgenv().configs.PlayerLock = Value 
+        if Value then
+            if type(PlayerLock) == "function" then
+                PlayerLock()
+            else
+                Fluent:Notify({ Title = "Error", Content = "PlayerLock function not found", Duration = 3 })
+            end
+        end
+    end 
+})
+CloseCombatSection2:AddToggle("AutoHeal", { 
+    Title = "Auto Heal (Pumpkins)", 
+    Default = false, 
+    Callback = function(Value) 
+        getgenv().configs.Pumpkins = Value 
+        if Value then
+            if type(Pumpkins) == "function" then
+                Pumpkins()
+            end
+        end
+    end 
+})
+CloseCombatSection2:AddToggle("HitboxExtender", { 
+    Title = "Hitbox Extender", 
+    Default = false, 
+    Callback = function(Value) 
+        getgenv().configs.Hitbox = Value 
+        if type(Hitbox) == "function" then
+            Hitbox() 
+        end
+        if not getgenv().configs.Hitbox then 
+            for _, plr in pairs(Players:GetPlayers()) do 
+                if plr ~= LocalPlayer and IsPlayerAlive(plr) and plr.Character:FindFirstChild('Hitbox') then 
+                    plr.Character.Hitbox.Size = Vector3.new(4.9453125, 6.273651123046875, 2.0283203125) 
+                end 
+            end 
+        end 
+    end 
+})
+
+-- ===== AIMBOT UI =====
+local AimbotSection = Tabs.Combat:AddSection("Aimbot")
+AimbotSection:AddToggle("AimbotToggle", { 
+    Title = "Enable Aimbot", 
+    Default = true, 
+    Callback = function(Value) 
+        getgenv().AimbotEnabled = Value
+        if not Value then
+            targetLocked = false
+            AimbotState.LockedTarget = nil
+        end
+    end 
+})
+AimbotSection:AddDropdown("AimbotPart", {
+    Title = "Target Part",
+    Values = { "Head", "HumanoidRootPart", "Torso", "LeftFoot", "RightFoot", "LeftHand", "RightHand" },
+    Default = 1,
+    Callback = function(Value)
+        getgenv().AimbotPart = Value
+    end
+})
+AimbotSection:AddSlider("AimbotRange", {
+    Title = "Range",
+    Min = 10,
+    Max = 1000,
+    Default = 75,
+    Rounding = 0,
+    Callback = function(Value)
+        getgenv().AimbotRange = Value
+    end
+})
+AimbotSection:AddSlider("AimbotFOV", {
+    Title = "FOV",
+    Min = 10,
+    Max = 500,
+    Default = 100,
+    Rounding = 0,
+    Callback = function(Value)
+        getgenv().AimbotFOV = Value
+    end
+})
+AimbotSection:AddParagraph({ Title = "Controls", Content = "Key: F1 to toggle | Right-click to lock" })
 
 local AdvancedSection2 = Tabs.Combat:AddSection("Advanced Kill Aura")
 AdvancedSection2:AddInput("OpKillAuraTarget", { Title = "Op KillAura Target", Default = "", Placeholder = "Username here", Callback = function(Value)
@@ -1960,6 +2163,129 @@ PlayerModSection2:AddInput("PlayerTp2", { Title = "Player TP", Default = "", Pla
     end
 end })
 
+-- ===== SPEED MODS =====
+local SpeedModSection = Tabs.LocalPlayer:AddSection("Speed Mods")
+
+-- Quick Speed Toggle
+SpeedModSection:AddToggle("QuickSpeedToggle", {
+    Title = "Quick Speed (Hold Key)",
+    Default = false,
+    Callback = function(Value)
+        getgenv().QuickSpeedToggle = Value
+    end
+})
+
+SpeedModSection:AddKeybind("QuickSpeedKey", {
+    Title = "Quick Speed Key",
+    Default = "B",
+    Callback = function(Key)
+        getgenv().QuickSpeedKey = Key
+    end
+})
+
+SpeedModSection:AddSlider("QuickSpeedMultiplier", {
+    Title = "Quick Speed Multiplier",
+    Min = 1,
+    Max = 20,
+    Default = 1,
+    Rounding = 0,
+    Callback = function(Value)
+        getgenv().QuickSpeedMultiplier = Value
+    end
+})
+
+-- Quick Speed Handler (chạy khi toggle bật)
+task.spawn(function()
+    while task.wait() do
+        if getgenv().QuickSpeedToggle then
+            if UserInputService:IsKeyDown(getgenv().QuickSpeedKey) and not UserInputService:GetFocusedTextBox() then
+                if IsPlayerAlive(LocalPlayer) then
+                    local moveDir = LocalPlayer.Character.Humanoid.MoveDirection
+                    if moveDir.Magnitude > 0 then
+                        LocalPlayer.Character:TranslateBy(moveDir * (getgenv().QuickSpeedMultiplier * 0.5))
+                    end
+                end
+            end
+        end
+    end
+end)
+
+-- Sneaky Speed (Extra Speed) - CHỈ TĂNG TỐC KHI DI CHUYỂN LÙI (S)
+SpeedModSection:AddToggle("SneakySpeed", {
+    Title = "Sneaky Speed (Backward Speed)",
+    Default = false,
+    Callback = function(Value)
+        getgenv().configs.ExtraSpeed = Value
+        if Value then
+            task.spawn(function()
+                while getgenv().configs.ExtraSpeed do
+                    task.wait()
+                    if IsPlayerAlive(LocalPlayer) then
+                        local hum = LocalPlayer.Character.Humanoid
+                        if hum then
+                            -- Kiểm tra nếu đang di chuyển lùi (S) - MoveDirection.Z > 0
+                            if hum.MoveDirection.Z > 0 then
+                                hum.WalkSpeed = 21
+                            else
+                                hum.WalkSpeed = 16
+                            end
+                        end
+                    end
+                end
+            end)
+        else
+            if IsPlayerAlive(LocalPlayer) then
+                LocalPlayer.Character.Humanoid.WalkSpeed = 16
+            end
+        end
+    end
+})
+
+-- Swim Speed
+SpeedModSection:AddSlider("SwimSpeed", {
+    Title = "Swim Speed",
+    Min = 10,
+    Max = 100,
+    Default = 14,
+    Rounding = 0,
+    Callback = function(Value)
+        local Constants = require(ReplicatedStorage:WaitForChild('References'):WaitForChild('SharedData'):WaitForChild('CONSTANTS'))
+        Constants.WALK_SPEEDS.SWIM = Value
+    end
+})
+
+-- Mod Glider Speed
+if MyInventory:FindFirstChild("Glider") or MyInventory:FindFirstChild("Easter Glider") then
+    SpeedModSection:AddSlider("GliderModSpeed", {
+        Title = "Glider Speed",
+        Min = 30,
+        Max = 300,
+        Default = 30,
+        Rounding = 0,
+        Callback = function(Value)
+            getgenv().GliderModSpeed = Value
+            if getgenv().GliderModToggle then
+                local GliderModule = require(LocalPlayer:WaitForChild('PlayerScripts'):WaitForChild('Main'):WaitForChild('ToolController'):WaitForChild('ToolObject'):WaitForChild('Controllers'):WaitForChild('Glider'))
+                setconstant(GliderModule.Step, 9, tonumber(Value))
+            end
+        end
+    })
+
+    SpeedModSection:AddToggle("GliderModToggle", {
+        Title = "Enable Glider Speed Mod",
+        Default = false,
+        Callback = function(Value)
+            getgenv().GliderModToggle = Value
+            local GliderModule = require(LocalPlayer:WaitForChild('PlayerScripts'):WaitForChild('Main'):WaitForChild('ToolController'):WaitForChild('ToolObject'):WaitForChild('Controllers'):WaitForChild('Glider'))
+            if Value == true then
+                setconstant(GliderModule.Step, 9, tonumber(getgenv().GliderModSpeed))
+            else
+                setconstant(GliderModule.Step, 9, 30)
+            end
+        end
+    })
+end
+
 local MiscModSection2 = Tabs.LocalPlayer:AddSection("Misc Mods")
 MiscModSection2:AddButton({ Title = "Get Map Candy (OP)", Callback = function()
     function GetCandy()
@@ -2155,8 +2481,8 @@ VisualsSection3:AddColorPicker("WaterColor", { Title = "Water Color", Default = 
 
 -- ===== CREDITS TAB =====
 local CreditSection2 = Tabs.Credits:AddSection("Credits")
-CreditSection2:AddParagraph("Made By: Chung")
-CreditSection2:AddParagraph("Credit: Chungdz")
+CreditSection2:AddParagraph({ Title = "Made By", Content = "Chung" })
+CreditSection2:AddParagraph({ Title = "Credit", Content = "Chungdz" })
 
 -- ===== LƯU CONFIG =====
 SaveManager:SetLibrary(Fluent)
